@@ -1,0 +1,6 @@
+Revision history for Perl extension Ceph::Rados.
+
+0.01  Tue Oct 28 15:51:38 2014
+	- original version; created by h2xs 1.23 with options
+		/usr/include/rados/librados.h -n Ceph::Rados --skip-exporter --skip-autoloader
+
