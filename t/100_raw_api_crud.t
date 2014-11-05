@@ -13,7 +13,7 @@ my $content = 'wargleblarg';
 
 my $pool_created_p = system "ceph osd pool create $pool 1";
 SKIP: {
-    skip "Can't create $pool pool", 11 $pool_created_p;
+    skip "Can't create $pool pool", 11 if $pool_created_p;
 
     my ($cluster, $io, $list);
     ok( $cluster = Ceph::Rados->new('admin'), "Create cluster handle" );
