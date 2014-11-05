@@ -39,10 +39,9 @@ write(io, oid, buf)
   CODE:
     len = strlen(buf);
     err = rados_write_full(io, oid, buf, len);
-    RETVAL = err == 0;
-  POSTCALL:
-    if (RETVAL < 0)
+    if (err < 0)
         croak("cannot write file '%s': %s", oid, strerror(-RETVAL));
+    RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
@@ -57,10 +56,9 @@ append(io, oid, buf, len)
   CODE:
     len = strlen(buf);
     err = rados_append(io, oid, buf, len);
-    RETVAL = err == 0;
-  POSTCALL:
-    if (RETVAL < 0)
+    if (err < 0)
         croak("cannot append to file '%s': %s", oid, strerror(-RETVAL));
+    RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
@@ -87,10 +85,9 @@ remove(io, oid)
     int              err;
   CODE:
     err = rados_remove(io, oid);
-    RETVAL = err == 0;
-  POSTCALL:
-    if (RETVAL < 0)
+    if (err < 0)
         croak("cannot remove file '%s': %s", oid, strerror(-RETVAL));
+    RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
