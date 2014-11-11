@@ -38,7 +38,7 @@ create(id)
     RETVAL
 
 int
-set_config_file(cluster, path)
+set_config_file(cluster, path = NULL)
     rados_t *        cluster
     const char *     path
   PREINIT:

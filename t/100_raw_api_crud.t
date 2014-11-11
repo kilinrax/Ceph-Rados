@@ -13,11 +13,11 @@ my $content = 'wargleblarg';
 
 my $pool_created_p = system "ceph osd pool create $pool 1";
 SKIP: {
-    skip "Can't create $pool pool", 8 if $pool_created_p;
+    skip "Can't create $pool pool", 11 if $pool_created_p;
 
     my ($cluster, $io, $list);
     ok( $cluster = Ceph::Rados->new('admin'), "Create cluster handle" );
-    ok( $cluster->set_config_file('/etc/ceph/ceph.conf'), "Read config file" );
+    ok( $cluster->set_config_file, "Read config file" );
     ok( $cluster->connect, "Connect to cluster" );
     ok( $io = $cluster->io($pool), "Open rados pool" );
     ok( $io->write($filename, $content), "Write object" );
