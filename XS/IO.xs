@@ -71,10 +71,14 @@ read(io, oid, len, off = 0)
   PREINIT:
     char *           buf;
     int              err;
+  INIT:
+    Newx(buf, len, char);
   CODE:
     err = rados_read(io, oid, buf, len, off);
     if (err < 0)
         croak("cannot read file '%s': %s", oid, strerror(-err));
+    if (err != len)
+        croak("asked for %i btyles, got back %i bytes", len, err);
     RETVAL = buf;
   OUTPUT:
     RETVAL
