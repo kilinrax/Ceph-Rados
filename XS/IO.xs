@@ -40,7 +40,7 @@ write(io, oid, buf)
     len = strlen(buf);
     err = rados_write_full(io, oid, buf, len);
     if (err < 0)
-        croak("cannot write file '%s': %s", oid, strerror(-RETVAL));
+        croak("cannot write file '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
@@ -57,12 +57,12 @@ append(io, oid, buf, len)
     len = strlen(buf);
     err = rados_append(io, oid, buf, len);
     if (err < 0)
-        croak("cannot append to file '%s': %s", oid, strerror(-RETVAL));
+        croak("cannot append to file '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
-int
+char *
 read(io, oid, len, off = 0)
     rados_ioctx_t    io
     const char *     oid
@@ -70,10 +70,12 @@ read(io, oid, len, off = 0)
     uint64_t         off
   PREINIT:
     char *           buf;
+    int              err;
   CODE:
-    RETVAL = rados_read(io, oid, buf, len, off);
-    if (RETVAL < 0)
-        croak("cannot read file '%s': %s", oid, strerror(-RETVAL));
+    err = rados_read(io, oid, buf, len, off);
+    if (err < 0)
+        croak("cannot read file '%s': %s", oid, strerror(-err));
+    RETVAL = buf;
   OUTPUT:
     RETVAL
 
@@ -86,7 +88,7 @@ remove(io, oid)
   CODE:
     err = rados_remove(io, oid);
     if (err < 0)
-        croak("cannot remove file '%s': %s", oid, strerror(-RETVAL));
+        croak("cannot remove file '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL

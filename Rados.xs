@@ -46,7 +46,7 @@ set_config_file(cluster, path = NULL)
   CODE:
     err = rados_conf_read_file(cluster, path);
     if (err < 0)
-        croak("cannot read config file '%s': %s", path, strerror(-RETVAL));
+        croak("cannot read config file '%s': %s", path, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
@@ -61,7 +61,7 @@ set_config_option(cluster, option, value)
   CODE:
     err = rados_conf_set(cluster, option, value);
     if (err < 0)
-        croak("cannot set config option '%s': %s", option, strerror(-RETVAL));
+        croak("cannot set config option '%s': %s", option, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
@@ -74,7 +74,7 @@ connect(cluster)
   CODE:
     err = rados_connect(cluster);
     if (err < 0)
-        croak("cannot connect to cluster: %s", strerror(-RETVAL));
+        croak("cannot connect to cluster: %s", strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
