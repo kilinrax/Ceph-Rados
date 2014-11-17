@@ -79,6 +79,9 @@ read(io, oid, len, off = 0)
         croak("cannot read file '%s': %s", oid, strerror(-err));
     if (err != len)
         croak("asked for %i btyles, got back %i bytes", len, err);
+    /* nasty hack - sometimes we get back garbage after the end,
+       so ensure the buffer is null-terminated at the right point */
+    buf[len] = 0;
     RETVAL = buf;
   OUTPUT:
     RETVAL
