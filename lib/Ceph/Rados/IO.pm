@@ -30,6 +30,16 @@ sub DESTROY {
     $self->destroy;
 }
 
+sub write {
+    my ($self, $oid, $data) = @_;
+    $self->_write($oid, $data, length($data));
+}
+
+sub append {
+    my ($self, $oid, $data) = @_;
+    $self->_append($oid, $data, length($data));
+}
+
 # Autoload methods go after =cut, and are processed by the autosplit program.
 
 1;

@@ -1,9 +1,10 @@
 use strictures;
 
-use Test::More tests => 26;
+use Test::More tests => 32;
 use Test::Exception;
 use Ceph::Rados;
 use Data::Dump qw/dump/;
+use FindBin qw/$Bin/;
 
 my @rnd = ('a'..'z',0..9);
 
@@ -15,9 +16,13 @@ There is the theory of Möbius. A twist in the fabric of space where time become
 EOF
 $files{test_long} = join '\n', <DATA>;
 
+open TGZ, "$Bin/fumble.tar.gz";
+$files{test_tar_gz} = join '\n', <TGZ>;
+close TGZ;
+
 my $pool_created_p = system "ceph osd pool create $pool 1";
 SKIP: {
-    skip "Can't create $pool pool", 26 if $pool_created_p;
+    skip "Can't create $pool pool", 32 if $pool_created_p;
 
     my ($cluster, $io, $list);
     ok( $cluster = Ceph::Rados->new('admin'), "Create cluster handle" );

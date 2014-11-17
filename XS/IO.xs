@@ -29,40 +29,42 @@ create(cluster, pool_name)
     RETVAL
 
 int
-write(io, oid, buf)
+_write(io, oid, data, len)
     rados_ioctx_t    io
     const char *     oid
-    const char *     buf
-  PREINIT:
+    SV *             data
     size_t           len;
+  PREINIT:
+    const char *     buf;
     int              err;
   CODE:
-    len = strlen(buf);
+    buf = (const char *)SvPV(data, len);
     err = rados_write_full(io, oid, buf, len);
     if (err < 0)
-        croak("cannot write file '%s': %s", oid, strerror(-err));
+        croak("cannot write object '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
 int
-append(io, oid, buf, len)
+_append(io, oid, data, len)
     rados_ioctx_t    io
     const char *     oid
-    const char *     buf
-  PREINIT:
+    SV *             data
     size_t           len;
+  PREINIT:
+    const char *     buf;
     int              err;
   CODE:
-    len = strlen(buf);
+    buf = (const char *)SvPV(data, len);
     err = rados_append(io, oid, buf, len);
     if (err < 0)
-        croak("cannot append to file '%s': %s", oid, strerror(-err));
+        croak("cannot append to object '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
 
-char *
+SV *
 read(io, oid, len, off = 0)
     rados_ioctx_t    io
     const char *     oid
@@ -76,13 +78,8 @@ read(io, oid, len, off = 0)
   CODE:
     err = rados_read(io, oid, buf, len, off);
     if (err < 0)
-        croak("cannot read file '%s': %s", oid, strerror(-err));
-    if (err != len)
-        croak("asked for %i bytes, got back %i bytes", len, err);
-    /* nasty hack - sometimes we get back garbage after the end,
-       so ensure the buffer is null-terminated at the right point */
-    buf[len] = 0;
-    RETVAL = buf;
+        croak("cannot read object '%s': %s", oid, strerror(-err));
+    RETVAL = newSVpv(buf, len);
   OUTPUT:
     RETVAL
 
@@ -95,7 +92,7 @@ remove(io, oid)
   CODE:
     err = rados_remove(io, oid);
     if (err < 0)
-        croak("cannot remove file '%s': %s", oid, strerror(-err));
+        croak("cannot remove object '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
   OUTPUT:
     RETVAL
