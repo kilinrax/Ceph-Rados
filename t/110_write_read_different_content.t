@@ -1,6 +1,6 @@
 use strictures;
 
-use Test::More tests => 14;
+use Test::More tests => 26;
 use Test::Exception;
 use Ceph::Rados;
 use Data::Dump qw/dump/;
@@ -17,7 +17,7 @@ $files{test_long} = join '\n', <DATA>;
 
 my $pool_created_p = system "ceph osd pool create $pool 1";
 SKIP: {
-    skip "Can't create $pool pool", 14 if $pool_created_p;
+    skip "Can't create $pool pool", 26 if $pool_created_p;
 
     my ($cluster, $io, $list);
     ok( $cluster = Ceph::Rados->new('admin'), "Create cluster handle" );
