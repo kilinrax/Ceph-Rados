@@ -1,16 +1,8 @@
 Ceph-Rados version 0.01
 =======================
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
-
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+This module provides a very limited subset of the librados API,
+currently just read/writes and lists.
 
 INSTALLATION
 
@@ -23,15 +15,14 @@ To install this module type the following:
 
 DEPENDENCIES
 
-This module requires these other modules and libraries:
+This module requires that you have the librados installed, available
+as either librados-dev under Ubuntu or from:
 
-  blah blah blah
+  http://ceph.com/resources/downloads/
 
 COPYRIGHT AND LICENCE
 
-Put the correct copyright and licence information here.
-
-Copyright (C) 2014 by Alex
+Copyright (C) 2014 by Alex Bowley.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.14.2 or,
