@@ -72,14 +72,14 @@ read(io, oid, len, off = 0)
     uint64_t         off
   PREINIT:
     char *           buf;
-    int              err;
+    int              retlen;
   INIT:
     Newx(buf, len, char);
   CODE:
-    err = rados_read(io, oid, buf, len, off);
-    if (err < 0)
-        croak("cannot read object '%s': %s", oid, strerror(-err));
-    RETVAL = newSVpv(buf, len);
+    retlen = rados_read(io, oid, buf, len, off);
+    if (retlen < 0)
+        croak("cannot read object '%s': %s", oid, strerror(-retlen));
+    RETVAL = newSVpv(buf, retlen);
   OUTPUT:
     RETVAL
 

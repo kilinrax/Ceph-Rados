@@ -81,7 +81,7 @@ Ceph::Rados - Perl wrapper to librados.
 
   my $io = $cluster->io('testing_pool');
   $io->write('greeting', 'hello');
-  my $stored_data = $io->read('greeting');
+  my $stored_data = $io->read('greeting',10);
   $io->delete('greeting');
 
   my $list = $io->list;
@@ -93,6 +93,8 @@ Ceph::Rados - Perl wrapper to librados.
 
 This module provides a very limited subset of the librados API,
 currently just read/writes and lists.
+
+read also requires length.
 
 =head1 SEE ALSO
 
