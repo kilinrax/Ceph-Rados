@@ -2,7 +2,7 @@ Ceph-Rados version 0.02
 =======================
 
 This module provides a very limited subset of the librados API,
-currently just read/writes and lists.
+currently just read/write/stat and lists.
 
 INSTALLATION
 

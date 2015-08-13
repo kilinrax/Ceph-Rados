@@ -40,6 +40,21 @@ sub append {
     $self->_append($oid, $data, length($data));
 }
 
+sub read {
+    my ($self, $oid, $len, $off) = @_;
+    # if undefined is passed as len, we stat the obj first to get the correct len
+    if (!defined($len)) {
+        ($len, undef) = $self->_stat($oid);
+    }
+    $off ||= 0;
+    $self->_read($oid, $len, $off);
+}
+
+sub stat {
+    my ($self, $oid) = @_;
+    $self->_stat($oid);
+}
+
 # Autoload methods go after =cut, and are processed by the autosplit program.
 
 1;
