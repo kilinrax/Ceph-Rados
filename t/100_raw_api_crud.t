@@ -1,6 +1,6 @@
 use strictures;
 
-use Test::More tests => 14;
+use Test::More tests => 18;
 use Test::Exception;
 use Ceph::Rados;
 use Data::Dump qw/dump/;
@@ -26,6 +26,10 @@ SKIP: {
     my $length = length($content);
     ok( my $stored_data = $io->read($filename, $length), "Read $length bytes from object" );
     is( $stored_data, $content, "Get back content ok" );
+    ok( my $stored_data2 = $io->read($filename), "Read unknown bytes from object" );
+    is( $stored_data2, $content, "Get back content ok without read size" );
+    ok( my ($stat_size, $stat_mtime) = $io->stat($filename), "Stat object" );
+    is( $stat_size, $length, "Stat size is same as content length" );
     ok( $list = $io->list, "Opened list context" );
     my $match = 0;
     while (my $entry = $list->next) {

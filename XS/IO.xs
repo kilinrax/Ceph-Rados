@@ -64,8 +64,24 @@ _append(io, oid, data, len)
   OUTPUT:
     RETVAL
 
+void
+_stat(io, oid)
+    rados_ioctx_t    io
+    const char *     oid
+  PREINIT:
+    size_t           size;
+    time_t           mtime;
+    int              err;
+  PPCODE:
+    err = rados_stat(io, oid, &size, &mtime);
+    if (err < 0)
+        croak("cannot stat object '%s': %s", oid, strerror(-err));
+    XPUSHs(sv_2mortal(newSVuv(size)));
+    XPUSHs(sv_2mortal(newSVuv(mtime)));
+
+
 SV *
-read(io, oid, len, off = 0)
+_read(io, oid, len, off = 0)
     rados_ioctx_t    io
     const char *     oid
     size_t           len
