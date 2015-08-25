@@ -55,6 +55,18 @@ sub stat {
     $self->_stat($oid);
 }
 
+sub mtime {
+    my ($self, $oid) = @_;
+    my (undef, $mtime) = $self->_stat($oid);
+    $mtime;
+}
+
+sub size {
+    my ($self, $oid) = @_;
+    my ($size, undef) = $self->_stat($oid);
+    $size;
+}
+
 # Autoload methods go after =cut, and are processed by the autosplit program.
 
 1;
