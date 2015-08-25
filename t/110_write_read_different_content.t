@@ -16,9 +16,9 @@ There is the theory of Möbius. A twist in the fabric of space where time become
 EOF
 $files{test_long} = join '\n', <DATA>;
 
-open TGZ, "$Bin/fumble.tar.gz";
-$files{test_tar_gz} = join '\n', <TGZ>;
-close TGZ;
+open my $TGZ, "$Bin/fumble.tar.gz";
+$files{test_tar_gz} = join '\n', <$TGZ>;
+close $TGZ;
 
 my $pool_created_p = system "ceph osd pool create $pool 1";
 SKIP: {
