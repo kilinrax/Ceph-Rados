@@ -19,12 +19,13 @@ if (-e $huge_file && -s $huge_file < 90 * 1024 * 1024) {
 }
 if (!-e $huge_file) {
     diag "creating $huge_file";
-    system "dd if=/dev/zero of=$huge_file count=120M iflag=count_bytes"
+    system "dd if=/dev/random of=$huge_file count=120M iflag=count_bytes"
 }
 
 my %files;
 {
-    open my $HUGE, "$Bin/test_huge_file" or die "Cannot open $Bin/test_huge_file";
+    open my $HUGE, "$Bin/test_huge_file" or die "Cannot open $Bin/test_huge_file: $!";
+    binmode $HUGE;
     undef $/;
     $files{test_huge} = <$HUGE>;
     close $HUGE;
@@ -48,7 +49,15 @@ SKIP: {
         my $length = length($content);
         ok( my $stored_data = $io->read($filename, $length),
             "Read $length bytes from $filename object" );
-        is( $stored_data, $content, "Get back $filename\'s content ok" );
+        unless (
+            ok( $stored_data eq $content, "Get back $filename\'s content ok" )
+        ) {
+            my $rej_file = "$filename.rej";
+            diag "Writing saved content to $rej_file";
+            open my $REJ, ">$rej_file" or die "Cannot open $rej_file: $!";
+            print $REJ $stored_data;
+            close $REJ;
+        };
         ok( $list = $io->list, "Opened list context" );
         my $match = 0;
         while (my $entry = $list->next) {

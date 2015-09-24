@@ -45,7 +45,7 @@ sub write {
             $chunk = $DEFAULT_OSD_MAX_WRITE;
         }
         #printf "Writing bytes %i to %i\n", $offset, $offset+$chunk;
-        $retval = $self->_write($oid, $data, $chunk, $offset)
+        $retval = $self->_write($oid, substr($data, $offset, $chunk), $chunk, $offset)
             or last;
     }
     return $retval;
