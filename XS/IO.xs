@@ -29,17 +29,18 @@ create(cluster, pool_name)
     RETVAL
 
 int
-_write(io, oid, data, len)
+_write(io, oid, data, len, off)
     rados_ioctx_t    io
     const char *     oid
     SV *             data
-    size_t           len;
+    size_t           len
+    uint64_t         off
   PREINIT:
     const char *     buf;
     int              err;
   CODE:
-    buf = (const char *)SvPV(data, len);
-    err = rados_write_full(io, oid, buf, len);
+    buf = (const char *)SvPV_nolen(data);
+    err = rados_write(io, oid, buf, len, off);
     if (err < 0)
         croak("cannot write object '%s': %s", oid, strerror(-err));
     RETVAL = err == 0;
@@ -51,7 +52,7 @@ _append(io, oid, data, len)
     rados_ioctx_t    io
     const char *     oid
     SV *             data
-    size_t           len;
+    size_t           len
   PREINIT:
     const char *     buf;
     int              err;

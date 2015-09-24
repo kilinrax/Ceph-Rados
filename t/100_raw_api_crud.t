@@ -40,7 +40,7 @@ SKIP: {
     ok( $list = $io->list, "Opened list context" );
     my $match = 0;
     while (my $entry = $list->next) {
-        diag "Found $entry";
+        #diag "Found $entry";
         $match = 1 if $entry eq $filename;
     }
     ok( $match, "List contains written file" );

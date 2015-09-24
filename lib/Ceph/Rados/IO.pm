@@ -13,6 +13,9 @@ our $VERSION = '0.01';
 
 # Preloaded methods go here.
 
+# TODO should query cluster for this value
+my $DEFAULT_OSD_MAX_WRITE = 90 * 1024 * 1024;
+
 sub new {
     my ($class, $context, $pool_name) = @_;
     my $obj = create($context, $pool_name);
@@ -32,7 +35,20 @@ sub DESTROY {
 
 sub write {
     my ($self, $oid, $data) = @_;
-    $self->_write($oid, $data, length($data));
+    my $length = length($data);
+    my $retval;
+    for (my $offset = 0; $offset < $length; $offset += $DEFAULT_OSD_MAX_WRITE) {
+        my $chunk;
+        if ($offset + $DEFAULT_OSD_MAX_WRITE > $length) {
+            $chunk = $length % $DEFAULT_OSD_MAX_WRITE;
+        } else {
+            $chunk = $DEFAULT_OSD_MAX_WRITE;
+        }
+        #printf "Writing bytes %i to %i\n", $offset, $offset+$chunk;
+        $retval = $self->_write($oid, $data, $chunk, $offset)
+            or last;
+    }
+    return $retval;
 }
 
 sub append {

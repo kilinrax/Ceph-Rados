@@ -1,6 +1,6 @@
 use strictures;
 
-use Test::More tests => 32;
+use Test::More tests => 13;
 use Test::Exception;
 use Ceph::Rados;
 use Data::Dump qw/dump/;
@@ -12,16 +12,23 @@ my $pool = $ENV{CEPH_POOL} || 'test_' . join '', map { $rnd[rand @rnd] } 0..9;
 
 my $client = $ENV{CEPH_CLIENT} || 'admin';
 
-my %files;
-$files{test_short} = 'wargleblarg';
-$files{test_medium} = <<EOF;
-There is the theory of Möbius. A twist in the fabric of space where time becomes a loop.
-EOF
-$files{test_long} = join '\n', <DATA>;
+my $huge_file = "$Bin/test_huge_file";
+if (-e $huge_file && -s $huge_file < 90 * 1024 * 1024) {
+    warn "$huge_file was truncated, removing";
+    unlink $huge_file;
+}
+if (!-e $huge_file) {
+    diag "creating $huge_file";
+    system "dd if=/dev/zero of=$huge_file count=120M iflag=count_bytes"
+}
 
-open my $TGZ, "$Bin/fumble.tar.gz";
-$files{test_tar_gz} = join '\n', <$TGZ>;
-close $TGZ;
+my %files;
+{
+    open my $HUGE, "$Bin/test_huge_file" or die "Cannot open $Bin/test_huge_file";
+    undef $/;
+    $files{test_huge} = <$HUGE>;
+    close $HUGE;
+}
 
 my $pool_created_p = system "ceph osd pool create $pool 1"
     unless $ENV{CEPH_POOL};
@@ -49,7 +56,7 @@ SKIP: {
             $match = 1 if $entry eq $filename;
         }
         ok( $match, "List contains written file $filename" );
-        ok( $io->remove($filename), "Remove $filename object" );
+        #    ok( $io->remove($filename), "Remove $filename object" );
     }
 
     lives_ok { undef $list } "Closed list context";
@@ -59,39 +66,3 @@ SKIP: {
     system "ceph osd pool delete $pool $pool --yes-i-really-really-mean-it"
         unless $ENV{CEPH_POOL};
 }
-
-__DATA__
- Verdaustig war's, und glaße Wieben
- rotterten gorkicht im Gemank.
- Gar elump war der Pluckerwank,
- und die gabben Schweisel frieben.
-
- »Hab acht vorm Zipferlak, mein Kind!
- Sein Maul ist beiß, sein Griff ist bohr.
- Vorm Fliegelflagel sieh dich vor,
- dem mampfen Schnatterrind.«
-
- Er zückt' sein scharfgebifftes Schwert,
- den Feind zu futzen ohne Saum,
- und lehnt' sich an den Dudelbaum
- und stand da lang in sich gekehrt.
-
- In sich gekeimt, so stand er hier,
- da kam verschnoff der Zipferlak
- mit Flammenlefze angewackt
- und gurgt' in seiner Gier.
-
- Mit Eins! und Zwei! und bis auf's Bein!
- Die biffe Klinge ritscheropf!
- Trennt' er vom Hals den toten Kopf,
- und wichernd sprengt' er heim.
-
- »Vom Zipferlak hast uns befreit?
- Komm an mein Herz, aromer Sohn!
- Oh, blumer Tag! Oh, schlusse Fron!«
- So kröpfte er vor Freud'.
-
- Verdaustig war's, und glaße Wieben
- rotterten gorkicht im Gemank.
- Gar elump war der Pluckerwank,
- und die gabben Schweisel frieben.
