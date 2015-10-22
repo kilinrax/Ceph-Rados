@@ -1,5 +1,13 @@
 Revision history for Perl extension Ceph::Rados.
 
+0.03  Thu Oct 22 13:13:02 UTC 2015
+    - correct license
+    - no bareword filehandles
+    - adds mtime and size methods
+    - handle writing files over osd_write_size_limit
+    (patch contributed by joseph evans)
+    - adds stat functionality, and ability to read object without knowing length
+
 0.02  Tue Feb 24 17:42:46 GMT 2015
     (patch contributed by adam@cpanel.net)
     - fixes: garbage received when guessing the read length (bug RT#102154)
