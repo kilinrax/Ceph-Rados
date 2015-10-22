@@ -34,7 +34,7 @@ my %files;
 my $pool_created_p = system "ceph osd pool create $pool 1"
     unless $ENV{CEPH_POOL};
 SKIP: {
-    skip "Can't create $pool pool", 32 if $pool_created_p;
+    skip "Can't create $pool pool", 13 if $pool_created_p;
 
     my ($cluster, $io, $list);
     ok( $cluster = Ceph::Rados->new($client), "Create cluster handle" );
