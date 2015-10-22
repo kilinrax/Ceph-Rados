@@ -1,4 +1,4 @@
-Ceph-Rados version 0.03
+Ceph-Rados version 0.04
 =======================
 
 This module provides a very limited subset of the librados API,

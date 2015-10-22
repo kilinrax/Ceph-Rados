@@ -1,5 +1,8 @@
 Revision history for Perl extension Ceph::Rados.
 
+0.04  Thu Oct 22 16:14:34 UTC 2015
+    - missing requires on Devel::CheckLib
+
 0.03  Thu Oct 22 13:13:02 UTC 2015
     - correct license
     - no bareword filehandles
