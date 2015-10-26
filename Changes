@@ -1,5 +1,8 @@
 Revision history for Perl extension Ceph::Rados.
 
+0.06  Mon Oct 26 12:46:17 UTC 2015
+    - test requires added to META.yml and WriteMakefile, removed (unnecessary) strictures.pm
+
 0.05  Mon Oct 26 11:36:13 UTC 2015
     - META.yml spec / requires updated to v2.0
 
