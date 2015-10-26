@@ -17,7 +17,7 @@ WriteMakefile(
         'Test::More'        => 0,
         'Test::Exception'   => 0,
         'Data::Dump'        => 0,
-    }
+    },
     ABSTRACT_FROM     => 'lib/Ceph/Rados.pm', # retrieve abstract from module
     AUTHOR            => 'Alex <alex@openimp.net>',
     LIBS              => ['-lrados'], # e.g., '-lm'
