@@ -17,4 +17,9 @@ prereqs:
     requires:
       Devel::CheckLib: '0'
       ExtUtils::MakeMaker: '0'
+  test:
+    requires:
+      Test::More: '0'
+      Test::Exception: '0'
+      Data::Dump: '0'
 version: '0.05'

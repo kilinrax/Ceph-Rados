@@ -1,4 +1,5 @@
-use strictures;
+use strict;
+use warnings;
 
 use Test::More tests => 13;
 use Test::Exception;
