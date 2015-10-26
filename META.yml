@@ -1,22 +1,20 @@
 ---
-abstract: 'Perl extension for librados'
+abstract: 'Perl wrapper to librados.'
 author:
   - 'Alex <alex@openimp.net>'
-build_requires:
-  ExtUtils::MakeMaker: '0'
-configure_requires:
-  ExtUtils::MakeMaker: '0'
-dynamic_config: 0
-generated_by: 'ExtUtils::MakeMaker version 6.57_05, CPAN::Meta::Converter version 2.142690'
+dynamic_config: 1
 license: perl
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: '1.4'
+  url: http://module-build.sourceforge.net/META-spec-v2.0.html
+  version: '2.0'
 name: Ceph-Rados
 no_index:
   directory:
     - t
     - inc
-requires:
-  Devel::CheckLib: '0'
-version: '0.03'
+prereqs:
+  configure:
+    requires:
+      Devel::CheckLib: '0'
+      ExtUtils::MakeMaker: '0'
+version: '0.04'
