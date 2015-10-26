@@ -9,8 +9,6 @@ use Ceph::Rados::List;
 
 our @ISA = qw();
 
-our $VERSION = '0.01';
-
 # Preloaded methods go here.
 
 # TODO should query cluster for this value
