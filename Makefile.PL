@@ -9,9 +9,15 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'Ceph::Rados',
     VERSION_FROM      => 'lib/Ceph/Rados.pm', # finds $VERSION
-    PREREQ_PM         => {
-        'Devel::CheckLib'   => 0,
+    CONFIGURE_REQUIRES  => {
+        'Devel::CheckLib'       => 0,
+        'ExtUtils::MakeMaker'   => 0,
     }, # e.g., Module::Name => 1.1
+    TEST_REQUIRES     => {
+        'Test::More'        => 0,
+        'Test::Exception'   => 0,
+        'Data::Dump'        => 0,
+    }
     ABSTRACT_FROM     => 'lib/Ceph/Rados.pm', # retrieve abstract from module
     AUTHOR            => 'Alex <alex@openimp.net>',
     LIBS              => ['-lrados'], # e.g., '-lm'
