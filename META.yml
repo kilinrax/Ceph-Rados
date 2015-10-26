@@ -17,4 +17,4 @@ prereqs:
     requires:
       Devel::CheckLib: '0'
       ExtUtils::MakeMaker: '0'
-version: '0.04'
+version: '0.05'
