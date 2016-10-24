@@ -101,6 +101,18 @@ _read(io, oid, len, off = 0)
     RETVAL
 
 int
+_pool_required_alignment(io)
+    rados_ioctx_t    io
+  PREINIT:
+    const char *     buf;
+    int              res;
+  CODE:
+    res = rados_ioctx_pool_required_alignment(io);
+    RETVAL = res;
+  OUTPUT:
+    RETVAL
+
+int
 remove(io, oid)
     rados_ioctx_t    io
     const char *     oid
