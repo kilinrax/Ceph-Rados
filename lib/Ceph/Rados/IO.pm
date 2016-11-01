@@ -71,6 +71,11 @@ sub stat {
     $self->_stat($oid);
 }
 
+sub pool_required_alignment {
+    my ($self) = @_;
+    return $self->_pool_required_alignment();
+}
+
 sub mtime {
     my ($self, $oid) = @_;
     my (undef, $mtime) = $self->_stat($oid);
