@@ -43,7 +43,7 @@ _write(io, oid, data, len, off)
     err = rados_write(io, oid, buf, len, off);
     if (err < 0)
         croak("cannot write object '%s': %s", oid, strerror(-err));
-    RETVAL = err == 0;
+    RETVAL = (err == 0) || (err == len);
   OUTPUT:
     RETVAL
 
