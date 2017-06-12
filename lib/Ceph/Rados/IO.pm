@@ -35,7 +35,7 @@ sub write {
     my ($self, $oid, $data) = @_;
     my $length = length($data);
     my $retval;
-    for (my $offset = 0; $offset < $length; $offset += $DEFAULT_OSD_MAX_WRITE) {
+    for (my $offset = 0; $offset <= $length; $offset += $DEFAULT_OSD_MAX_WRITE) {
         my $chunk;
         if ($offset + $DEFAULT_OSD_MAX_WRITE > $length) {
             $chunk = $length % $DEFAULT_OSD_MAX_WRITE;
