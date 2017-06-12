@@ -4,6 +4,7 @@ use 5.014002;
 use strict;
 use warnings;
 use Carp;
+use Scalar::Util qw/blessed/;
 
 use Ceph::Rados::List;
 
@@ -32,6 +33,29 @@ sub DESTROY {
 }
 
 sub write {
+    my ($self, $oid, $source) = @_;
+    if (blessed $source) {
+        &write_io;
+    } else {
+        &write_data;
+    }
+}
+
+sub write_io {
+    my ($self, $oid, $io) = @_;
+    my ($retval, $data);
+    my $offset = 0;
+    while (my $length = $io->read($data, $DEFAULT_OSD_MAX_WRITE)) {
+        #printf "Writing bytes %i to %i\n", $offset, $offset+$length;
+        $retval = $self->_write($oid, $data, $length, $offset)
+            or last;
+        # add returned length to offset, not read length - they shouldn't differ, but this is probably safer
+        $offset += $length;
+    }
+    return $retval;
+}
+
+sub write_data {
     my ($self, $oid, $data) = @_;
     my $length = length($data);
     my $retval;
