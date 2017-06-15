@@ -34,18 +34,18 @@ sub DESTROY {
 
 sub write {
     my ($self, $oid, $source) = @_;
-    if (blessed $source) {
+    if (tell $source) {
         &write_io;
     } else {
         &write_data;
     }
 }
 
-sub write_io {
-    my ($self, $oid, $io) = @_;
+sub write_handle {
+    my ($self, $oid, $handle) = @_;
     my ($retval, $data);
     my $offset = 0;
-    while (my $length = $io->read($data, $DEFAULT_OSD_MAX_WRITE)) {
+    while (my $length = sysread($handle, $data, $DEFAULT_OSD_MAX_WRITE)) {
         #printf "Writing bytes %i to %i\n", $offset, $offset+$length;
         $retval = $self->_write($oid, $data, $length, $offset)
             or last;
@@ -76,6 +76,22 @@ sub write_data {
 sub append {
     my ($self, $oid, $data) = @_;
     $self->_append($oid, $data, length($data));
+}
+
+sub read_handle {
+    my ($self, $oid, $handle) = @_;
+    (my $length, undef) = $self->_stat($oid);
+    #
+    for (my $offset = 0; $offset <= $length; $offset += $DEFAULT_OSD_MAX_WRITE) {
+        my $chunk;
+        if ($offset + $DEFAULT_OSD_MAX_WRITE > $length) {
+            $chunk = $length % $DEFAULT_OSD_MAX_WRITE;
+        } else {
+            $chunk = $DEFAULT_OSD_MAX_WRITE;
+        }
+        my $data = $self->_read($oid, $chunk, $offset);
+        syswrite $handle, $data;
+    }
 }
 
 sub read {
