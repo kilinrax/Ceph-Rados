@@ -135,7 +135,7 @@ librados documentation - L<http://docs.ceph.com/docs/master/rados/api/librados/>
 
 =head1 AUTHOR
 
-Alex Bowley, E<lt>alex@openimp.netE<gt>
+Alex Bowley, E<lt>alex@openimp.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

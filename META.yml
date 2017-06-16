@@ -1,7 +1,7 @@
 ---
 abstract: 'Perl wrapper to librados.'
 author:
-  - 'Alex <alex@openimp.net>'
+  - 'Alex <alex@openimp.com>'
 dynamic_config: 1
 license: perl
 meta-spec:
