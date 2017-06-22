@@ -34,7 +34,12 @@ sub DESTROY {
 
 sub write {
     my ($self, $oid, $source) = @_;
-    if (tell $source) {
+    my $tell;
+    {
+        local $^W = 0;
+        $tell = tell($source)
+    }
+    if ($tell) {
         &write_handle;
     } else {
         &write_data;
