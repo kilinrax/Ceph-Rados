@@ -35,7 +35,7 @@ sub DESTROY {
 sub write {
     my ($self, $oid, $source) = @_;
     if (tell $source) {
-        &write_io;
+        &write_handle;
     } else {
         &write_data;
     }
