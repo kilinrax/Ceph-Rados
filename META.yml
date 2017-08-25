@@ -17,6 +17,8 @@ prereqs:
     requires:
       Devel::CheckLib: '0'
       ExtUtils::MakeMaker: '0'
+      File::Which: '0'
+      C::Scan::Constants: '0'
   test:
     requires:
       Test::More: '0'
