@@ -8,7 +8,7 @@ use AutoLoader;
 use Carp;
 use Ceph::Rados::IO;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 # Do we have C symbols in  a Ceph::Rados::Constants::C::Symbols module?
 my $_symbols_present;

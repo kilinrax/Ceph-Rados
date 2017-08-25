@@ -24,4 +24,4 @@ prereqs:
       Test::More: '0'
       Test::Exception: '0'
       Data::Dump: '0'
-version: '0.08'
+version: '0.09'
