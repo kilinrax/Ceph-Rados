@@ -1,7 +1,7 @@
 use 5.014002;
 
 use Devel::CheckLib;
-check_lib_or_exit( lib => 'rados', header => qw! rados/librados.h rados/librados.hpp ! );
+check_lib_or_exit( lib => 'rados', header => 'rados/librados.h' );
 
 use ExtUtils::MakeMaker;
 use File::Which;
@@ -33,9 +33,10 @@ WriteMakefile(
 if (which('gcc') and -e '/dev/null') {
     # looks like we're on something Gnu-like, attempt to find rados header file
     # and generate constants from it
-    my $output = `echo '#include <rados/librados.hpp>' | cpp -H -o /dev/null 2>&1 | head -n1`;
+    my $output = `echo '#include <rados/librados.h>' | cpp -H -o /dev/null 2>&1 | head -n1`;
     my ($path) = ($output =~ m!^\. (.*)$!);
     my @constants = extract_constants_from( $path );
+    @constants = grep { $_ ne 'CEPH_LIBRADOS_H' and $_ ne 'CEPH_RADOS_API' } @constants;
     # suppress help to STDERR
     open SAVERR, ">&STDERR";
     open STDERR, ">/dev/null";
