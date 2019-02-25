@@ -140,9 +140,10 @@ my $types = {map {($_, 1)} qw(IV)};
 my @names = (qw(CEPH_OSD_TMAP_CREATE CEPH_OSD_TMAP_HDR CEPH_OSD_TMAP_RM
 	       CEPH_OSD_TMAP_SET LIBRADOS_CREATE_EXCLUSIVE
 	       LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_LOCK_FLAG_RENEW
-	       LIBRADOS_SNAP_DIR LIBRADOS_SNAP_HEAD LIBRADOS_SUPPORTS_WATCH
-	       LIBRADOS_VERSION_CODE LIBRADOS_VER_EXTRA LIBRADOS_VER_MAJOR
-	       LIBRADOS_VER_MINOR));
+	       LIBRADOS_SNAP_DIR LIBRADOS_SNAP_HEAD
+	       LIBRADOS_SUPPORTS_APP_METADATA LIBRADOS_SUPPORTS_SERVICES
+	       LIBRADOS_SUPPORTS_WATCH LIBRADOS_VERSION_CODE LIBRADOS_VER_EXTRA
+	       LIBRADOS_VER_MAJOR LIBRADOS_VER_MINOR));
 
 print constant_types(), "\n"; # macro defs
 foreach (C_constant ("Ceph::Rados", 'constant', 'IV', $types, undef, 3, @names) ) {
@@ -221,9 +222,38 @@ __END__
     }
     break;
   case 26:
-    if (memEQ(name, "LIBRADOS_CREATE_IDEMPOTENT", 26)) {
+    /* Names all of length 26.  */
+    /* LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_SUPPORTS_SERVICES */
+    /* Offset 25 gives the best switch position.  */
+    switch (name[25]) {
+    case 'S':
+      if (memEQ(name, "LIBRADOS_SUPPORTS_SERVICE", 25)) {
+      /*                                        S      */
+#ifdef LIBRADOS_SUPPORTS_SERVICES
+        *iv_return = LIBRADOS_SUPPORTS_SERVICES;
+        return PERL_constant_ISIV;
+#else
+        return PERL_constant_NOTDEF;
+#endif
+      }
+      break;
+    case 'T':
+      if (memEQ(name, "LIBRADOS_CREATE_IDEMPOTEN", 25)) {
+      /*                                        T      */
 #ifdef LIBRADOS_CREATE_IDEMPOTENT
-      *iv_return = LIBRADOS_CREATE_IDEMPOTENT;
+        *iv_return = LIBRADOS_CREATE_IDEMPOTENT;
+        return PERL_constant_ISIV;
+#else
+        return PERL_constant_NOTDEF;
+#endif
+      }
+      break;
+    }
+    break;
+  case 30:
+    if (memEQ(name, "LIBRADOS_SUPPORTS_APP_METADATA", 30)) {
+#ifdef LIBRADOS_SUPPORTS_APP_METADATA
+      *iv_return = LIBRADOS_SUPPORTS_APP_METADATA;
       return PERL_constant_ISIV;
 #else
       return PERL_constant_NOTDEF;
