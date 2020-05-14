@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More;
 use Test::Exception;
 
 use Ceph::Rados;
@@ -105,3 +105,5 @@ SKIP: {
     system "ceph osd pool delete $pool $pool --yes-i-really-really-mean-it"
         unless $ENV{CEPH_POOL};
 }
+
+done_testing;

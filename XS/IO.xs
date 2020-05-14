@@ -48,6 +48,40 @@ _write(io, oid, data, len, off)
     RETVAL
 
 int
+_write_from_fh(ioctx, oid, fh, psize)
+    rados_ioctx_t  ioctx
+    const char *     oid
+    SV *             fh
+    int              psize
+  PREINIT:
+    char *           buf;
+    size_t           len;
+    int              err;
+    uint64_t         off;
+  INIT:
+    PerlIO *  io     = IoIFP(sv_2io(fh));
+    int       retlen = 0;
+    int       chk_sz = 1024 * 1024;
+    Newx(buf, chk_sz, char);
+  CODE:
+    //printf("preparing to write from FH to %s\n", oid);
+    for (off=0; off<psize; off+=chk_sz) {
+        len = psize < off + chk_sz ? psize % chk_sz : chk_sz;
+        err = PerlIO_read(io, buf, len);
+        if (err < 0)
+            croak("cannot read from filehandle: %s", strerror(-err));
+        //printf("writing %i bytes from FH to %s\n", len, oid);
+        err = rados_read(ioctx, oid, buf, len, off);
+        if (err < 0)
+            croak("cannot write striped object '%s': %s", oid, strerror(-err));
+        retlen += len;
+    }
+    //printf("wrote %i bytes from FH to %s\n", retlen, oid);
+    RETVAL = retlen;
+  OUTPUT:
+    RETVAL
+
+int
 _append(io, oid, data, len)
     rados_ioctx_t    io
     const char *     oid
@@ -99,6 +133,46 @@ _read(io, oid, len, off = 0)
     RETVAL = newSVpv(buf, retlen);
   OUTPUT:
     RETVAL
+
+int
+_read_to_fh(ioctx, oid, fh)
+    rados_ioctx_t  ioctx
+    const char *     oid
+    SV *             fh
+  PREINIT:
+    char *           buf;
+    size_t           len;
+    size_t           psize;
+    time_t           pmtime;
+    int              err;
+    uint64_t         off;
+  INIT:
+    PerlIO *  io     = IoOFP(sv_2io(fh));
+    int       chk_sz = 1024 * 1024;
+    Newx(buf, chk_sz, char);
+  CODE:
+    // stat and determine read length
+    err = rados_stat(ioctx, oid, &psize, &pmtime);
+    if (err < 0)
+        croak("cannot stat object '%s': %s", oid, strerror(-err));
+    //printf("preparing to write from %s to FH, %i bytes\n", oid, psize);
+    for (off=0; off<psize; off+=chk_sz) {
+        len = psize < off + chk_sz ? psize % chk_sz : chk_sz;
+        //printf("Reading %i bytes, offset %i, of %i total from ioctx\n", len, off, psize);
+        err = rados_read(ioctx, oid, buf, len, off);
+        if (err < 0)
+            croak("cannot read object '%s': %s", oid, strerror(-err));
+        //printf("Writing %i bytes to FH\n", len);
+        err = PerlIO_write(io, buf, len);
+        if (err < 0)
+            croak("cannot write to filehandle: %s", strerror(-err));
+    }
+    if (err < 0)
+        croak("cannot read object '%s': %s", oid, strerror(-err));
+    RETVAL = err;
+  OUTPUT:
+    RETVAL
+
 
 int
 _pool_required_alignment(io)
