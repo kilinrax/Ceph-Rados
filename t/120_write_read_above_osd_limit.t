@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Test::Exception;
 use Ceph::Rados;
 use Data::Dump qw/dump/;
@@ -66,7 +66,7 @@ SKIP: {
             $match = 1 if $entry eq $filename;
         }
         ok( $match, "List contains written file $filename" );
-        #    ok( $io->remove($filename), "Remove $filename object" );
+        ok( $io->remove($filename), "Remove $filename object" );
     }
 
     lives_ok { undef $list } "Closed list context";
