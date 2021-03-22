@@ -143,9 +143,9 @@ _read_to_fh(ioctx, oid, fh, len = 0, off = 0)
     uint64_t         off
   PREINIT:
     char *           buf;
-    size_t           psize;
     int              buflen;
-    int              bufpos;
+    uint64_t         bufpos;
+    size_t           psize;
     time_t           pmtime;
     int              err;
   INIT:
