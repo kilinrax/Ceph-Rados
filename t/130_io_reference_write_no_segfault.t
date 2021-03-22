@@ -53,9 +53,9 @@ sub fork_and_check {
         exit;
     }
     my $i = 0;
-    while ($i++ < 10 and !waitpid($pid, WNOHANG)) {
+    while ($i++ < 60 and !waitpid($pid, WNOHANG)) {
         diag "Waiting for $pid";
-        sleep(1);
+        sleep(10);
     }
     if ($?) {
         my $err = $? == -1 ? $! : $? & 127 ?
