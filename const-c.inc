@@ -121,6 +121,51 @@ constant_18 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
+constant_26 (pTHX_ const char *name, IV *iv_return) {
+  /* When generated this function returned values for the list of names given
+     here.  However, subsequent manual editing may have added or removed some.
+     LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_SUPPORTS_GETADDRS
+     LIBRADOS_SUPPORTS_SERVICES */
+  /* Offset 23 gives the best switch position.  */
+  switch (name[23]) {
+  case 'C':
+    if (memEQ(name, "LIBRADOS_SUPPORTS_SERVICES", 26)) {
+    /*                                      ^         */
+#ifdef LIBRADOS_SUPPORTS_SERVICES
+      *iv_return = LIBRADOS_SUPPORTS_SERVICES;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'D':
+    if (memEQ(name, "LIBRADOS_SUPPORTS_GETADDRS", 26)) {
+    /*                                      ^         */
+#ifdef LIBRADOS_SUPPORTS_GETADDRS
+      *iv_return = LIBRADOS_SUPPORTS_GETADDRS;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'E':
+    if (memEQ(name, "LIBRADOS_CREATE_IDEMPOTENT", 26)) {
+    /*                                      ^         */
+#ifdef LIBRADOS_CREATE_IDEMPOTENT
+      *iv_return = LIBRADOS_CREATE_IDEMPOTENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  }
+  return PERL_constant_NOTFOUND;
+}
+
+static int
 constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
@@ -141,9 +186,10 @@ my @names = (qw(CEPH_OSD_TMAP_CREATE CEPH_OSD_TMAP_HDR CEPH_OSD_TMAP_RM
 	       CEPH_OSD_TMAP_SET LIBRADOS_CREATE_EXCLUSIVE
 	       LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_LOCK_FLAG_RENEW
 	       LIBRADOS_SNAP_DIR LIBRADOS_SNAP_HEAD
-	       LIBRADOS_SUPPORTS_APP_METADATA LIBRADOS_SUPPORTS_SERVICES
-	       LIBRADOS_SUPPORTS_WATCH LIBRADOS_VERSION_CODE LIBRADOS_VER_EXTRA
-	       LIBRADOS_VER_MAJOR LIBRADOS_VER_MINOR));
+	       LIBRADOS_SUPPORTS_APP_METADATA LIBRADOS_SUPPORTS_GETADDRS
+	       LIBRADOS_SUPPORTS_SERVICES LIBRADOS_SUPPORTS_WATCH
+	       LIBRADOS_VERSION_CODE LIBRADOS_VER_EXTRA LIBRADOS_VER_MAJOR
+	       LIBRADOS_VER_MINOR));
 
 print constant_types(), "\n"; # macro defs
 foreach (C_constant ("Ceph::Rados", 'constant', 'IV', $types, undef, 3, @names) ) {
@@ -222,33 +268,7 @@ __END__
     }
     break;
   case 26:
-    /* Names all of length 26.  */
-    /* LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_SUPPORTS_SERVICES */
-    /* Offset 25 gives the best switch position.  */
-    switch (name[25]) {
-    case 'S':
-      if (memEQ(name, "LIBRADOS_SUPPORTS_SERVICE", 25)) {
-      /*                                        S      */
-#ifdef LIBRADOS_SUPPORTS_SERVICES
-        *iv_return = LIBRADOS_SUPPORTS_SERVICES;
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    case 'T':
-      if (memEQ(name, "LIBRADOS_CREATE_IDEMPOTEN", 25)) {
-      /*                                        T      */
-#ifdef LIBRADOS_CREATE_IDEMPOTENT
-        *iv_return = LIBRADOS_CREATE_IDEMPOTENT;
-        return PERL_constant_ISIV;
-#else
-        return PERL_constant_NOTDEF;
-#endif
-      }
-      break;
-    }
+    return constant_26 (aTHX_ name, iv_return);
     break;
   case 30:
     if (memEQ(name, "LIBRADOS_SUPPORTS_APP_METADATA", 30)) {

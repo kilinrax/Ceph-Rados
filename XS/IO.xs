@@ -135,35 +135,41 @@ _read(io, oid, len, off = 0)
     RETVAL
 
 int
-_read_to_fh(ioctx, oid, fh)
+_read_to_fh(ioctx, oid, fh, len = 0, off = 0)
     rados_ioctx_t  ioctx
     const char *     oid
     SV *             fh
+    size_t           len
+    uint64_t         off
   PREINIT:
     char *           buf;
-    size_t           len;
     size_t           psize;
+    int              buflen;
+    int              bufpos;
     time_t           pmtime;
     int              err;
-    uint64_t         off;
   INIT:
     PerlIO *  io     = IoOFP(sv_2io(fh));
     int       chk_sz = 1024 * 1024;
     Newx(buf, chk_sz, char);
   CODE:
-    // stat and determine read length
-    err = rados_stat(ioctx, oid, &psize, &pmtime);
-    if (err < 0)
-        croak("cannot stat object '%s': %s", oid, strerror(-err));
-    //printf("preparing to write from %s to FH, %i bytes\n", oid, psize);
-    for (off=0; off<psize; off+=chk_sz) {
-        len = psize < off + chk_sz ? psize % chk_sz : chk_sz;
-        //printf("Reading %i bytes, offset %i, of %i total from ioctx\n", len, off, psize);
-        err = rados_read(ioctx, oid, buf, len, off);
+    if (0 == len) {
+        // stat and determine read length
+        err = rados_stat(ioctx, oid, &psize, &pmtime);
+        if (err < 0)
+            croak("cannot stat object '%s': %s", oid, strerror(-err));
+        len = psize-off;
+    }
+    //printf("preparing to write from %s to FH, %i bytes\n", oid, len);
+    for (bufpos=off; bufpos<len+off; bufpos+=chk_sz) {
+        // logic is 'will bufpos move past ien+offnext cycle'
+        buflen = len+off < bufpos+chk_sz ? len % chk_sz : chk_sz;
+        //printf("Reading %i bytes, offset %i, of %i total from ioctx\n", buflen, butpos, len);
+        err = rados_read(ioctx, oid, buf, buflen, bufpos);
         if (err < 0)
             croak("cannot read object '%s': %s", oid, strerror(-err));
         //printf("Writing %i bytes to FH\n", len);
-        err = PerlIO_write(io, buf, len);
+        err = PerlIO_write(io, buf, buflen);
         if (err < 0)
             croak("cannot write to filehandle: %s", strerror(-err));
     }
@@ -174,15 +180,17 @@ _read_to_fh(ioctx, oid, fh)
     RETVAL
 
 
-int
+uint64_t
 _pool_required_alignment(io)
     rados_ioctx_t    io
   PREINIT:
-    const char *     buf;
-    int              res;
+    uint64_t         req;
+    int              err;
   CODE:
-    res = rados_ioctx_pool_required_alignment(io);
-    RETVAL = res;
+    err = rados_ioctx_pool_required_alignment2(io, &req);
+    if (err < 0)
+        croak("cannot rados_ioctx_pool_required_alignment2(): %s", strerror(-err));
+    RETVAL = req;
   OUTPUT:
     RETVAL
 
