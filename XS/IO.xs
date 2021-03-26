@@ -48,11 +48,12 @@ _write(io, oid, data, len, off)
     RETVAL
 
 int
-_write_from_fh(ioctx, oid, fh, psize)
+_write_from_fh(ioctx, oid, fh, psize, debug=false)
     rados_ioctx_t  ioctx
     const char *     oid
     SV *             fh
-    int              psize
+    uint64_t         psize
+    bool             debug
   PREINIT:
     char *           buf;
     size_t           len;
@@ -60,23 +61,26 @@ _write_from_fh(ioctx, oid, fh, psize)
     uint64_t         off;
   INIT:
     PerlIO *  io     = IoIFP(sv_2io(fh));
-    int       retlen = 0;
+    uint64_t  retlen = 0;
     int       chk_sz = 1024 * 1024;
     Newx(buf, chk_sz, char);
   CODE:
-    //printf("preparing to write from FH to %s\n", oid);
+    if (debug)
+        printf("preparing to write from FH to %s\n", oid);
     for (off=0; off<psize; off+=chk_sz) {
         len = psize < off + chk_sz ? psize % chk_sz : chk_sz;
         err = PerlIO_read(io, buf, len);
         if (err < 0)
             croak("cannot read from filehandle: %s", strerror(-err));
-        //printf("writing %i bytes from FH to %s\n", len, oid);
+        if (debug)
+            printf("writing %" PRIu64 "-%" PRIu64 " / %" PRIu64 " bytes from FH to %s\n", off, off+len, psize, oid);
         err = rados_read(ioctx, oid, buf, len, off);
         if (err < 0)
             croak("cannot write striped object '%s': %s", oid, strerror(-err));
         retlen += len;
     }
-    //printf("wrote %i bytes from FH to %s\n", retlen, oid);
+    if (debug)
+        printf("wrote %" PRIu64 " bytes from FH to %s\n", retlen, oid);
     RETVAL = retlen;
   OUTPUT:
     RETVAL
@@ -135,12 +139,13 @@ _read(io, oid, len, off = 0)
     RETVAL
 
 int
-_read_to_fh(ioctx, oid, fh, len = 0, off = 0)
+_read_to_fh(ioctx, oid, fh, len = 0, off = 0, debug=false)
     rados_ioctx_t  ioctx
     const char *     oid
     SV *             fh
     size_t           len
     uint64_t         off
+    bool             debug
   PREINIT:
     char *           buf;
     int              buflen;
@@ -153,22 +158,27 @@ _read_to_fh(ioctx, oid, fh, len = 0, off = 0)
     int       chk_sz = 1024 * 1024;
     Newx(buf, chk_sz, char);
   CODE:
-    if (0 == len) {
+    if ((0 == len) || debug) {
         // stat and determine read length
         err = rados_stat(ioctx, oid, &psize, &pmtime);
         if (err < 0)
             croak("cannot stat object '%s': %s", oid, strerror(-err));
-        len = psize-off;
     }
-    //printf("preparing to write from %s to FH, %i bytes\n", oid, len);
+    if (0 == len)
+        len = psize-off;
+    if (debug)
+        printf("preparing to write from %s to FH, %zu bytes\n", oid, len);
     for (bufpos=off; bufpos<len+off; bufpos+=chk_sz) {
         // logic is 'will bufpos move past ien+offnext cycle'
-        buflen = len+off < bufpos+chk_sz ? len % chk_sz : chk_sz;
-        //printf("Reading %i bytes, offset %i, of %i total from ioctx\n", buflen, butpos, len);
+        buflen = len+off < bufpos+chk_sz ? len+off % chk_sz : chk_sz;
+        if (debug)
+            printf("Reading %u bytes, offset %" PRIu64 ", of %" PRIu64 "-%" PRIu64 "/%" PRIu64 " from striper\n", buflen, bufpos, off, len+off, psize);
+
         err = rados_read(ioctx, oid, buf, buflen, bufpos);
         if (err < 0)
             croak("cannot read object '%s': %s", oid, strerror(-err));
-        //printf("Writing %i bytes to FH\n", len);
+        if (debug)
+            printf("Writing %zu bytes to FH\n", len);
         err = PerlIO_write(io, buf, buflen);
         if (err < 0)
             croak("cannot write to filehandle: %s", strerror(-err));
