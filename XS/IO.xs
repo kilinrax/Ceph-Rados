@@ -74,9 +74,9 @@ _write_from_fh(ioctx, oid, fh, psize, debug=false)
             croak("cannot read from filehandle: %s", strerror(-err));
         if (debug)
             printf("writing %" PRIu64 "-%" PRIu64 " / %" PRIu64 " bytes from FH to %s\n", off, off+len, psize, oid);
-        err = rados_read(ioctx, oid, buf, len, off);
+        err = rados_write(ioctx, oid, buf, len, off);
         if (err < 0)
-            croak("cannot write striped object '%s': %s", oid, strerror(-err));
+            croak("cannot write object '%s': %s", oid, strerror(-err));
         retlen += len;
     }
     if (debug)
@@ -138,9 +138,9 @@ _read(io, oid, len, off = 0)
   OUTPUT:
     RETVAL
 
-int
+size_t
 _read_to_fh(ioctx, oid, fh, len = 0, off = 0, debug=false)
-    rados_ioctx_t  ioctx
+    rados_ioctx_t    ioctx
     const char *     oid
     SV *             fh
     size_t           len
@@ -185,7 +185,7 @@ _read_to_fh(ioctx, oid, fh, len = 0, off = 0, debug=false)
     }
     if (err < 0)
         croak("cannot read object '%s': %s", oid, strerror(-err));
-    RETVAL = err;
+    RETVAL = len;
   OUTPUT:
     RETVAL
 

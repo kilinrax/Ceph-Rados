@@ -1,5 +1,8 @@
 Revision history for Perl extension Ceph::Rados.
 
+0.13  Fri  2 Apr 21:24:51 BST 2021
+    - fixes _write_to_fh()
+
 0.14  Thu  1 Apr 17:58:23 BST 2021
     - fixes range buffer length bug
 
