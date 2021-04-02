@@ -169,10 +169,10 @@ _read_to_fh(ioctx, oid, fh, len = 0, off = 0, debug=false)
     if (debug)
         printf("preparing to write from %s to FH, %zu bytes\n", oid, len);
     for (bufpos=off; bufpos<len+off; bufpos+=chk_sz) {
-        // logic is 'will bufpos move past ien+offnext cycle'
-        buflen = len+off < bufpos+chk_sz ? len+off % chk_sz : chk_sz;
+        // logic is 'will bufpos move past ien+off next cycle'
+        buflen = len+off < bufpos+chk_sz ? len % chk_sz : chk_sz;
         if (debug)
-            printf("Reading %u bytes, offset %" PRIu64 ", of %" PRIu64 "-%" PRIu64 "/%" PRIu64 " from striper\n", buflen, bufpos, off, len+off, psize);
+            printf("Reading %u bytes, offset %" PRIu64 ", of %" PRIu64 "-%" PRIu64 "/%" PRIu64 " from cephio\n", buflen, bufpos, off, len+off, psize);
 
         err = rados_read(ioctx, oid, buf, buflen, bufpos);
         if (err < 0)
