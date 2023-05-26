@@ -18,7 +18,7 @@ DEPENDENCIES
 This module requires that you have the librados installed, available
 as either librados-dev under Ubuntu or from:
 
-  http://ceph.com/resources/downloads/
+  http://ceph.io/
 
 COPYRIGHT AND LICENCE
 
