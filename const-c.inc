@@ -184,7 +184,8 @@ use ExtUtils::Constant qw (constant_types C_constant XS_constant);
 my $types = {map {($_, 1)} qw(IV)};
 my @names = (qw(CEPH_OSD_TMAP_CREATE CEPH_OSD_TMAP_HDR CEPH_OSD_TMAP_RM
 	       CEPH_OSD_TMAP_SET LIBRADOS_CREATE_EXCLUSIVE
-	       LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_LOCK_FLAG_RENEW
+	       LIBRADOS_CREATE_IDEMPOTENT LIBRADOS_LOCK_FLAG_MAY_RENEW
+	       LIBRADOS_LOCK_FLAG_MUST_RENEW LIBRADOS_LOCK_FLAG_RENEW
 	       LIBRADOS_SNAP_DIR LIBRADOS_SNAP_HEAD
 	       LIBRADOS_SUPPORTS_APP_METADATA LIBRADOS_SUPPORTS_GETADDRS
 	       LIBRADOS_SUPPORTS_SERVICES LIBRADOS_SUPPORTS_WATCH
@@ -269,6 +270,26 @@ __END__
     break;
   case 26:
     return constant_26 (aTHX_ name, iv_return);
+    break;
+  case 28:
+    if (memEQ(name, "LIBRADOS_LOCK_FLAG_MAY_RENEW", 28)) {
+#ifdef LIBRADOS_LOCK_FLAG_MAY_RENEW
+      *iv_return = LIBRADOS_LOCK_FLAG_MAY_RENEW;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 29:
+    if (memEQ(name, "LIBRADOS_LOCK_FLAG_MUST_RENEW", 29)) {
+#ifdef LIBRADOS_LOCK_FLAG_MUST_RENEW
+      *iv_return = LIBRADOS_LOCK_FLAG_MUST_RENEW;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
     break;
   case 30:
     if (memEQ(name, "LIBRADOS_SUPPORTS_APP_METADATA", 30)) {
