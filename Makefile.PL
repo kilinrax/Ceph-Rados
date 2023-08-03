@@ -7,7 +7,6 @@ use ExtUtils::MakeMaker;
 use File::Copy;
 use File::Spec;
 use File::Which;
-use C::Scan::Constants;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 my $gnulike_p = which('gcc') && -e '/dev/null';
@@ -38,6 +37,7 @@ WriteMakefile(
     # OBJECT            => '$(O_FILES)', # link all the C files too
 );
 if ($gnulike_p) {
+    eval {require C::Scan::Constants};
     # looks like we're on something Gnu-like, attempt to find rados header file
     # and generate constants from it
     my $output = `echo '#include <rados/librados.h>' | cpp -H -o /dev/null 2>&1 | head -n1`;
