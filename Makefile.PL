@@ -44,14 +44,14 @@ if ($gnulike_p) {
     # drop out to fallback if we get an error
     goto FALLBACK if $output =~ m/clang: error/;
     my ($path) = ($output =~ m!^\. (.*)$!);
-    my @constants = extract_constants_from( $path );
+    my @constants = C::Scan::Constants::extract_constants_from( $path );
     @constants = grep { $_ ne 'CEPH_LIBRADOS_H' and
                         $_ ne 'CEPH_RADOS_API' and
                         $_ ne 'VOIDPTR_RADOS_T'} @constants;
     # suppress help to STDERR
     open SAVERR, ">&STDERR";
     open STDERR, ">/dev/null";
-    write_constants_module( "Ceph::Rados", @constants );
+    C::Scan::Constants::write_constants_module( "Ceph::Rados", @constants );
     open  STDERR, ">&SAVERR";
     close SAVERR;
 }
