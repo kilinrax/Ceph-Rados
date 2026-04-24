@@ -1,5 +1,7 @@
 Revision history for Perl extension Ceph::Rados.
 
+0.23  Fri 24 Apr 2026 13:15:47 EEST
+    - missing const-xs.inc, breaking build on Apple Silicon
 
 0.22  Fri  4 Aug 11:55:27 BST 2023
     - fixes install under Linux, broken by previous version
