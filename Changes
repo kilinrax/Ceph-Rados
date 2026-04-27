@@ -1,6 +1,5 @@
 Revision history for Perl extension Ceph::Rados.
 
-
 0.22  Fri  4 Aug 11:55:27 BST 2023
     - fixes install under Linux, broken by previous version
 
