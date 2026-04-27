@@ -4,7 +4,7 @@ use warnings;
 use Test::More tests => 21;
 use Test::Exception;
 use Ceph::Rados;
-use Data::Dump qw/dump/;
+use Data::Dumper;
 
 my @rnd = ('a'..'z',0..9);
 

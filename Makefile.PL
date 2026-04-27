@@ -26,7 +26,7 @@ WriteMakefile(
         'Test::More'        => 0,
         'Test::Exception'   => 0,
         'Test::SharedFork'  => 0,
-        'Data::Dump'        => 0,
+        'Data::Dumper'      => 0,
     },
     ABSTRACT_FROM     => 'lib/Ceph/Rados.pm', # retrieve abstract from module
     AUTHOR            => 'Alex <alex@openimp.com>',

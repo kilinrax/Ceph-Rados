@@ -4,7 +4,7 @@ use warnings;
 use Test::More tests => 32;
 use Test::Exception;
 use Ceph::Rados;
-use Data::Dump qw/dump/;
+use Data::Dumper;
 use FindBin qw/$Bin/;
 
 my @rnd = ('a'..'z',0..9);

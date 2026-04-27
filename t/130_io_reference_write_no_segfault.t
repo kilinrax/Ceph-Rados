@@ -6,7 +6,7 @@ use Test::Exception;
 use Test::SharedFork;
 
 use Ceph::Rados;
-use Data::Dump qw/dump/;
+use Data::Dumper;
 use Fcntl qw/:flock/;
 use POSIX ":sys_wait_h";
 
