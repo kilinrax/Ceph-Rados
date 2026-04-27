@@ -20,7 +20,8 @@ if (-e $huge_file && -s $huge_file < 90 * 1024 * 1024) {
 }
 if (!-e $huge_file) {
     diag "creating $huge_file";
-    system "dd if=/dev/zero of=$huge_file count=120M iflag=count_bytes"
+    my $flags = $^O eq 'darwin' ? 'bs=120M count=1' : 'count=120M iflag=count_bytes';
+    system "dd if=/dev/zero of=$huge_file $flags"
 }
 
 my %files;
